@@ -32,7 +32,7 @@ function isPasswordValid(password){
 
 function testIsPasswordValid(password){
   // Return string message with validation status of work function isPasswordValid
-  passwordValidStatus = isPasswordValid(password)?'надёжный':'ненадёжный';
+  let passwordValidStatus = isPasswordValid(password)?'надёжный':'ненадёжный';
   return 'Пароль ' + password + ' : ' + passwordValidStatus;
 }
 

@@ -14,13 +14,24 @@
 function nameCorrector(name){
   // Makes uppercase for first character and lowercase for a rest
   // Return corrected string
-  let result = name.substr(0, 1).toUpperCase() + name.substr(1).toLowerCase();
+  let result = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
   return result;
+}
+
+function testNameSurnameForCorrection(name, surname){
+  // Test and print to console log results of name and surname correction
+  let nameCorrected = nameCorrector(name);
+  let surnameCorrected = nameCorrector(surname);
+  console.log('Для имени', name, name === nameCorrected ? "имя осталось без изменений":"имя было преобразовано в " + nameCorrected);
+  console.log('Для фамилии', surname, surname === surnameCorrected ? "фамилия осталось без изменений":"имя было преобразовано в " + surnameCorrected);
 }
 
 let name = 'eLVIS';
 let surname = 'prEslEY';
-console.log(nameCorrector(name));
-console.log(nameCorrector(surname));
-
-
+testNameSurnameForCorrection(name, surname);
+name = 'Gene';
+surname = 'Vincent';
+testNameSurnameForCorrection(name, surname);
+name = 'Johnnie';
+surname = 'RaY';
+testNameSurnameForCorrection(name, surname);
