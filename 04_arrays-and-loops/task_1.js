@@ -20,31 +20,11 @@
 // Попробуйте использовать несколько видов циклов и выбрать тот, который вы считаете наиболее подходящим для решения задачи.
 
 function randomGenerator(n, m){
-  // Generate random number from range (n, m).
-  let startRange = n;
-  let endRange = m;
-  let randomNumber = 0;
-  if (n > m){
-    startRange = m;
-    endRange = n;
-  }
-  if (startRange == endRange){
-    return startRange;
-  }
-  else if (startRange == 0){
-    randomNumber = Math.random() * endRange;
-  }
-  else if (startRange < 0 && endRange < 0){
-    randomNumber = Math.random() * (endRange + Math.abs(startRange)) + startRange + 1;
-
-  }
-  else{
-    randomNumber = Math.random() * (Math.abs(endRange - startRange)) + startRange;
-  }
-  randomNumber = Math.floor(randomNumber);
-  return randomNumber;
+  let min = Math.min(n, m);
+  let max = Math.max(n, m);
+  let rand = min + Math.random() * (max + 1 - min);
+  return Math.floor(rand);
 }
-
 
 function arrayGenerator(count, n, m){
   // Generate array for 'count' elements with elemenet value range from 'n' to 'm'
@@ -61,14 +41,14 @@ function arrayGeneratorDoWhileVersion(count, n, m){
   // using 'do-while' construction.
   let resultArray = [];
   if (count > 0){
-    do{
+    do {
       resultArray.push(randomGenerator(n, m));
       count -= 1;
     }
-    while(count!=0);
+    while(count != 0);
     return resultArray;
   }
-  else{
+  else {
     return 0;
   }
 }
@@ -77,15 +57,14 @@ function arrayGeneratorWhileVersion(count, n, m){
   // Generate array for 'count' elements with elemenet value range from 'n' to 'm'
   // using 'while' construction.
   let resultArray_array = [];
-  if (count > 0){
-    while(count!=0)
-    {
+  if (count > 0) {
+    while(count != 0) {
       resultArray.push(randomGenerator(n, m));
       count -= 1;
     }
     return resultArray;
   }
-  else{
+  else {
     return 0;
   }
 }

@@ -18,19 +18,21 @@
 // Рекомендации к выполнению
 // Подсказка: индекс дня недели можно вычислить с помощью операции остатка от деления.
 
-function generateJanyaryDaysCalendar(startDayNumber){
-  // generate Janyary (31 days named) calendar for selected start day number [from 1 to 7].
-  if (0 < startDayNumber && startDayNumber <= 7){
-    startDayNumber -= 1;
-    nameOfDays = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье'];
-    for (let day = 1; day <= 31; ++day){
+function generateJanyaryDaysCalendar(startDayName){
+  // Generate Janyary (31 days named) calendar for selected start day russian name.
+  let nameOfDays = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье'];
+  startDayNumber = nameOfDays.indexOf(startDayName);
+  if (startDayNumber >= 0) {
+    for (let day = 1; day <= 31; ++day) {
       console.log(`${day} января, ${nameOfDays[startDayNumber]}`);
-      startDayNumber = startDayNumber == 6 ? 0: ++startDayNumber;
+      startDayNumber = startDayNumber == nameOfDays.length - 1 ? 0: ++startDayNumber;
     }
   }
-  else{
-    console.log(`${startDayNumber}, не корректный номер дня недели, выберите в промежутке от 1 по 7.`);
+  else {
+    console.log(`${startDayName}, некорректное имя дня недели.`);
   }
 }
 
-generateJanyaryDaysCalendar(2);
+generateJanyaryDaysCalendar('вторник');
+generateJanyaryDaysCalendar('вторNник');
+generateJanyaryDaysCalendar('воскресенье');

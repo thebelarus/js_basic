@@ -16,12 +16,12 @@
 function stringReverser(string){
   // Made and return reverse string for input string.
   stringLength = string.length;
-  if (stringLength == 1 || stringLength == 0){
+  if (stringLength == 1 || stringLength == 0) {
     return string;
   }
-  else{
+  else {
     resultString = '';
-    for (stringIndex in string){
+    for (stringIndex in string) {
       resultString += string[stringLength - stringIndex - 1];
     }
     return resultString;

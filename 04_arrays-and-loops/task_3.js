@@ -15,25 +15,26 @@ function tankMover(roadMines){
   tankLives = 2;
   movesCounter = 0;
   logTankMovesString = `Для roadMines = [${roadMines}] вывод: танк переместился на`;
-  do{
+  do {
     movesCounter += 1;
     logTankMovesString += ` ${movesCounter}`;
-    if (roadMines.pop()){
+    if (roadMines.shift()) {
       tankLives -= 1;
-      if (tankLives == 1){
+      if (tankLives == 1) {
         logTankMovesString += ' и танк повреждён';
       }
-      else{
+      else {
         logTankMovesString += ' и танк уничтожен';
       }
     }
-    if (roadMines.length == 0){
+    if (roadMines.length == 0) {
       logTankMovesString += '.';
-    }else{
+    }
+    else {
       logTankMovesString += ',';
     }
   }
-  while(tankLives!=0 && roadMines.length!=0);
+  while(tankLives != 0 && roadMines.length != 0);
   return logTankMovesString;
 }
 
