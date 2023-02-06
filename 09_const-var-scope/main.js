@@ -4,7 +4,7 @@
    */
   function createNumbersArray(size) {
     let result = [];
-    for (let i = 1; i <= size; i++) {
+    for (let i = 1; i <= (size * size) / 2; i++) {
       result.push(i, i);
     }
     return result;
@@ -45,7 +45,7 @@
   function createTitle() {
     let title = document.createElement("h1");
     title.innerHTML = "Игра окончена, все карточки открыты!";
-    title.style.visibility = "hidden";
+    title.style.display = "none";
     document.body.appendChild(title);
     return title;
   }
@@ -53,13 +53,30 @@
   /**
    * Функция очистки html элементов старой игры и заполение массива новыми данными.
    */
-  function cleanAndStartNewGame() {
+  function endGame() {
     let elems = document.querySelectorAll("div.card");
     for (elem of elems) {
       elem.remove();
     }
+  }
+
+  /**
+   * Функция создания нового набора данных для игры и отображение карточек.
+   */
+  function startGame(gameSize) {
     game = createGame(createGameData(gameSize));
     showGame(game);
+  }
+
+  /**
+   * Функция валидации пользовательского ввода на четность и диапазон от 2 по 10, в случае неверного ввода возврат значения 4.
+   */
+  function validateGameSizeInput(size) {
+    const parsedSize = parseInt(size);
+    if (!isNaN(parsedSize) && 2 <= parsedSize <= 10 && parsedSize % 2 === 0) {
+      return parsedSize;
+    }
+    return 4;
   }
 
   /**
@@ -68,10 +85,14 @@
   function createNewGameButton() {
     let button = document.createElement("button");
     button.innerHTML = "Начать новую игру?";
+    button.classList.add("btn");
     button.addEventListener("click", () => {
-      cleanAndStartNewGame();
-      finalTitle.style.visibility = "hidden";
-      button.style.visibility = "hidden";
+      endGame();
+      gameSize = validateGameSizeInput(inputGameSizeForm.size.value);
+      startGame(gameSize);
+      newGameButton.style.visibility = "hidden";
+      finalTextTitle.style.display = "none";
+      inputGameSizeForm.style.display = "none";
     });
     document.body.appendChild(button);
     button.style.visibility = "hidden";
@@ -85,6 +106,25 @@
     return cardsArray.filter(
       (elem) => elem.selected === true && elem.done === false
     );
+  }
+
+  /**
+   * Функция выбора размера контейнера для карточек взависимости от количества размера игрового поля.
+   */
+  function getContainerWidth(size) {
+    if (size === 2) {
+      return "250px";
+    } else if (size === 4) {
+      return "500px";
+    } else if (size === 6) {
+      return "750px";
+    } else if (size === 8) {
+      return "1000px";
+    } else if (size === 10) {
+      return "1250px";
+    } else {
+      return "500px";
+    }
   }
 
   /**
@@ -130,7 +170,7 @@
         }
       }
       if (is_game_is_finished(game)) {
-        finalTitle.style.visibility = "visible";
+        finalTextTitle.style.display = "block";
         newGameButton.style.visibility = "visible";
       }
     });
@@ -141,14 +181,26 @@
    * Функция привязки и отображения HTML элементов карточек к родителю.
    * Сброс игры по истечению таймера.
    */
-  function showGame(game, timeout = 60) {
+  function showGame(game) {
     let gameField = document.getElementById("game");
+    gameField.style.width = getContainerWidth(gameSize);
     for (item of game) {
       gameField.append(createCard(item));
     }
-    setTimeout(() => {
-      cleanAndStartNewGame();
-    }, timeout * 1000);
+    let time = timeLimit;
+    let id = setInterval(() => {
+      timerTitle.innerHTML = `До конца игры: ${time}`;
+      time--;
+      if (is_game_is_finished()) {
+        clearInterval(id);
+      }
+      if (time === 0) {
+        timerTitle.innerHTML = `Время вышло!`;
+        endGame();
+        clearInterval(id);
+        newGameButton.style.visibility = "visible";
+      }
+    }, 1000);
   }
 
   /**
@@ -167,9 +219,42 @@
     return result;
   }
 
-  const gameSize = 5;
+  /**
+   * Функция создания поля заголовка для вывода значения таймера.
+   */
+  function createTimerTitle() {
+    const gameField = document.getElementById("game");
+    const timerTitle = document.createElement("h2");
+    timerTitle.classList.add("timer");
+    gameField.append(timerTitle);
+    return timerTitle;
+  }
+
+  /**
+   * Функция создания формы ввода размера игры.
+   */
+  function createInputGameSizeForm() {
+    const gameField = document.getElementById("game");
+    const form = document.createElement("form");
+    const input = document.createElement("input");
+    const label = document.createElement("label");
+    input.type = "number";
+    input.name = "size";
+    label.classList.add("size__label");
+    input.classList.add("size__input");
+    label.innerHTML = "Количество карточек по вертикали/горизонтали";
+    form.append(label);
+    form.append(input);
+    gameField.append(form);
+    return form;
+  }
+
+  let gameSize = 4;
+  const timeLimit = 60;
   let game = createGame(createGameData(gameSize));
-  const finalTitle = createTitle();
+  const finalTextTitle = createTitle();
+  const timerTitle = createTimerTitle();
   const newGameButton = createNewGameButton();
-  showGame(game);
+  const inputGameSizeForm = createInputGameSizeForm();
+  newGameButton.style.visibility = "visible";
 })();
