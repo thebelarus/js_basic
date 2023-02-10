@@ -1,26 +1,361 @@
-// Этап 1. В HTML файле создайте верстку элементов, которые будут статичны(неизменны).
+(function () {
+  let studentsList = [];
 
-// Этап 2. Создайте массив объектов студентов.Добавьте в него объекты студентов, например 5 студентов.
+  /**
+   * Функция фильтрация массива по значению имени.
+   */
+  function filterByName(array, filterValuе) {
+    let filteredArray = array.filter((student) => {
+      return (
+        `${student.lastName.toLowerCase()} ${student.firstName.toLowerCase()} ${student.middleName.toLowerCase()}`.search(
+          filterValuе.toLowerCase()
+        ) > -1
+      );
+    });
+    return filteredArray;
+  }
 
-const studentsList = [
-    // Добавьте сюда объекты студентов
-]
+  /**
+   * Функция фильтрация массива по значению факультета.
+   */
+  function filterByFaculty(array, filterValuе) {
+    let filteredArray = array.filter((student) => {
+      return (
+        student.faculty.toLowerCase().search(filterValuе.toLowerCase()) > -1
+      );
+    });
+    return filteredArray;
+  }
 
-// Этап 3. Создайте функцию вывода одного студента в таблицу, по аналогии с тем, как вы делали вывод одного дела в модуле 8. Функция должна вернуть html элемент с информацией и пользователе.У функции должен быть один аргумент - объект студента.
+  /**
+   * Функция фильтрация массива по значению года. Если задана отсечка,то она суммируется с значением года.
+   */
+  function filterByStudyYear(array, filterValuе, yearOffset = 0) {
+    parsedValue = parseInt(filterValuе);
+    if (!isNaN(parsedValue)) {
+      let filteredArray = array.filter((student) => {
+        return student.yearOfStudy + yearOffset === parsedValue;
+      });
+      return filteredArray;
+    }
+    return [];
+  }
 
-function getStudentItem(studentObj) {
+  /**
+   * Функция фильтрация массива по значению полей фильтра: имя, факультет, год начала обучения, год окончания обучения.
+   */
+  function filterHandler() {
+    const nameFilter = document.getElementById("nameFilter").value;
+    const facultyFilter = document.getElementById("facultyFilter").value;
+    const studyStartFilter = document.getElementById("studyStartFilter").value;
+    const studyEndFilter = document.getElementById("studyEndFilter").value;
+    let result = studentsList;
+    if (nameFilter) {
+      result = filterByName(result, nameFilter);
+    }
+    if (facultyFilter) {
+      result = filterByFaculty(result, facultyFilter);
+    }
+    if (studyStartFilter) {
+      result = filterByStudyYear(result, studyStartFilter);
+    }
+    if (studyEndFilter) {
+      result = filterByStudyYear(result, studyEndFilter, (yearOffset = 4));
+    }
+    renderStudentsTable(result);
+  }
 
-}
+  /**
+   * Функция сортировки массива по имени(по убыванию).
+   */
+  function sortAndRenderByName() {
+    let sortedArray = studentsList.sort((a, b) => {
+      return `${a.lastName} ${a.firstName} ${a.middleName}` <
+        `${b.lastName} ${b.firstName} ${b.middleName}`
+        ? -1
+        : 1;
+    });
+    renderStudentsTable(sortedArray);
+  }
 
-// Этап 4. Создайте функцию отрисовки всех студентов. Аргументом функции будет массив студентов.Функция должна использовать ранее созданную функцию создания одной записи для студента.Цикл поможет вам создать список студентов.Каждый раз при изменении списка студента вы будете вызывать эту функцию для отрисовки таблицы.
+  /**
+   * Функция сортировки массива по факультету и отображение в таблицу.
+   */
+  function sortAndRenderByFaculty() {
+    let sortedArray = studentsList.sort((a, b) => {
+      return a.faculty < b.faculty ? -1 : 1;
+    });
+    renderStudentsTable(sortedArray);
+  }
 
-function renderStudentsTable(studentsArray) {
+  /**
+   * Функция сортировки массива по дню рождения и отображение в таблицу.
+   */
+  function sortAndRenderByBirthday() {
+    let sortedArray = studentsList.sort((a, b) => {
+      return a.birthday > b.birthday ? -1 : 1;
+    });
+    renderStudentsTable(sortedArray);
+  }
 
-}
+  /**
+   * Функция сортировки массива по году начала обучения и отображение в таблицу.
+   */
+  function sortAndRenderByStudyYear() {
+    let sortedArray = studentsList.sort((a, b) => {
+      return a.yearOfStudy > b.yearOfStudy ? -1 : 1;
+    });
+    renderStudentsTable(sortedArray);
+  }
 
-// Этап 5. К форме добавления студента добавьте слушатель события отправки формы, в котором будет проверка введенных данных.Если проверка пройдет успешно, добавляйте объект с данными студентов в массив студентов и запустите функцию отрисовки таблицы студентов, созданную на этапе 4.
+  /**
+   * Функция вывода одного студента в таблицу .
+   */
+  function getStudentItem(studentObj) {
+    let studentsTable = document
+      .getElementById("students")
+      .getElementsByTagName("tbody")[0];
+    let row = studentsTable.insertRow();
+    let fullNameCell = row.insertCell(0);
+    let facultyCell = row.insertCell(1);
+    let ageCell = row.insertCell(2);
+    let studyCeil = row.insertCell(3);
+    const { firstName, lastName, middleName, birthday, yearOfStudy, faculty } =
+      studentObj;
+    const age = new Date(new Date() - birthday).getFullYear() - 1970;
+    const studyStartDate = new Date(yearOfStudy, 9);
+    const studyEndDate = new Date(
+      studyStartDate.setFullYear(studyStartDate.getFullYear() + 4)
+    );
+    const studyEndYear = studyEndDate.getFullYear();
+    const currentDate = new Date();
+    const cursNumber =
+      new Date(currentDate - new Date(yearOfStudy, 9)).getFullYear() - 1970 + 1;
+    let curs = "";
+    if (cursNumber < 1) {
+      curs = "обучение еще не началось";
+    } else if (cursNumber > 4) {
+      curs = "закончил";
+    } else {
+      curs = `${cursNumber} курс`;
+    }
+    const fullName = `${lastName} ${firstName} ${middleName}`;
+    const fullAge = `${birthday.toLocaleDateString("ru")} (${age} лет)`;
+    const fullStudy = `${yearOfStudy} - ${studyEndYear} (${curs})`;
+    fullNameCell.innerHTML = fullName;
+    facultyCell.innerHTML = faculty;
+    ageCell.innerHTML = fullAge;
+    studyCeil.innerHTML = fullStudy;
+  }
 
+  /**
+   * Функция вывода всех студентов в таблицу.
+   */
+  function renderStudentsTable(studentsArray = studentsList) {
+    const tableBody = document
+      .getElementById("students")
+      .getElementsByTagName("tbody")[0];
+    tableBody.innerHTML = "";
+    studentsArray.forEach((student) => getStudentItem(student));
+  }
 
-// Этап 5. Создайте функцию сортировки массива студентов и добавьте события кликов на соответствующие колонки.
+  /**
+   * Функция валидации слова на присутствие только символов английского или русского языка.
+   */
+  function validateAndReturnWord(word) {
+    let trimedWord = word.trim();
+    if (/[a-zа-яё]/i.test(trimedWord.toLowerCase())) {
+      return trimedWord;
+    }
+    return false;
+  }
 
-// Этап 6. Создайте функцию фильтрации массива студентов и добавьте события для элементов формы.
+  /**
+   * Функция валидации года в диапазоне от 2000-го до текущего года.
+   */
+  function validateAndReturnYear(year, yearLimit = 2000) {
+    yearParsed = parseInt(year);
+    const currenYear = new Date().getFullYear();
+    if (
+      !isNaN(yearParsed) &&
+      yearParsed >= yearLimit &&
+      yearParsed <= currenYear
+    ) {
+      return yearParsed;
+    }
+    return false;
+  }
+
+  /**
+   * Функция валидации дня рождения в диапазоне от 01.01.1900 до текущей даты.
+   */
+  function validateAndReturnBithday(date) {
+    bithdayParsed = Date.parse(date);
+    if (
+      isNaN(bithdayParsed) ||
+      bithdayParsed <= new Date(1900, 0, 1) ||
+      bithdayParsed >= new Date()
+    ) {
+      return false;
+    }
+    return new Date(bithdayParsed);
+  }
+
+  /**
+   * Функция валидации данных формы с помощью валидаторов, формирование массива ошибок валидации.
+   */
+  function validateAndAddStudent(
+    students,
+    firstNameInput,
+    lastNameInput,
+    middleNameInput,
+    birthdayInput,
+    yearOfStudyInput,
+    facultyInput
+  ) {
+    let validationErrorMessages = [];
+    firstName = validateAndReturnWord(firstNameInput);
+    if (!firstName) {
+      validationErrorMessages.push(
+        "Некоректное значение имени. Требуются только символы русского или английского языка."
+      );
+    }
+    lastName = validateAndReturnWord(lastNameInput);
+    if (!lastName) {
+      validationErrorMessages.push(
+        "Некоректное значение фамилии. Требуются только символы русского или английского языка."
+      );
+    }
+    middleName = validateAndReturnWord(middleNameInput);
+    if (!middleName) {
+      validationErrorMessages.push(
+        "Некоректное значение отчества. Требуются только символы русского или английского языка."
+      );
+    }
+    birthday = validateAndReturnBithday(birthdayInput);
+    if (!birthday) {
+      validationErrorMessages.push(
+        "Некоректное значение даты рождения. Требуется в диапазоне от 01.01.1900 до текущей даты"
+      );
+    }
+
+    yearOfStudy = validateAndReturnYear(yearOfStudyInput);
+    if (!yearOfStudy) {
+      validationErrorMessages.push(
+        "Некоректное значение год обучения. Требуется год с 2000-го до текущего года."
+      );
+    }
+
+    faculty = validateAndReturnWord(facultyInput);
+    if (!faculty) {
+      validationErrorMessages.push(
+        "Некоректное значение фукальтета. Требуются только символы русского или английского языка."
+      );
+    }
+    if (validationErrorMessages.length === 0) {
+      students.push({
+        firstName,
+        lastName,
+        middleName,
+        birthday,
+        yearOfStudy,
+        faculty,
+      });
+      return [true, validationErrorMessages];
+    }
+    return [false, validationErrorMessages];
+  }
+
+  /**
+   * Функция очистки списка ошибок валидации со страницы.
+   */
+  function cleanErrors() {
+    const errorsList = document.getElementById("errors");
+    if (errorsList && errorsList.value !== "") {
+      errorsList.remove();
+    }
+  }
+
+  /**
+   * Функция отображения ошибок валидации на странице.
+   */
+  function renderErrors(errors) {
+    const form = document.getElementById("studentForm");
+    const list = document.createElement("ol");
+    list.style.color = "tomato";
+    const listItem = document.createElement("span");
+    listItem.textContent = "Возникли ошибки заполнения формы!";
+    list.append(listItem);
+    list.id = "errors";
+    for (let error of errors) {
+      const listItem = document.createElement("li");
+      listItem.textContent = error;
+      list.append(listItem);
+    }
+    form.appendChild(list);
+  }
+
+  /**
+   * Функция получения и валидации данных формы, при успешной валидации, запись в список студентов. Отображения списка студентов и списка ошибок.
+   */
+  function addStudentHandler(event) {
+    event.preventDefault();
+    const formData = new FormData(document.getElementById("studentForm"));
+    lastName = formData.get("lastName");
+    firstName = formData.get("firstName");
+    middleName = formData.get("middleName");
+    birthday = formData.get("birthday");
+    yearOfStudy = formData.get("yearOfStudy");
+    faculty = formData.get("faculty");
+    const [isAdded, errors] = validateAndAddStudent(
+      studentsList,
+      firstName,
+      lastName,
+      middleName,
+      birthday,
+      yearOfStudy,
+      faculty
+    );
+    cleanErrors();
+    if (isAdded) {
+      renderStudentsTable();
+      document.getElementById("studentForm").reset();
+    } else {
+      renderErrors(errors);
+    }
+  }
+
+  renderStudentsTable(studentsList);
+  document
+    .getElementById("firstLastNameLabel")
+    .addEventListener("click", sortAndRenderByName);
+  document
+    .getElementById("facultyLabel")
+    .addEventListener("click", sortAndRenderByFaculty);
+
+  document
+    .getElementById("birthdayLabel")
+    .addEventListener("click", sortAndRenderByBirthday);
+  document
+    .getElementById("studyYearLabel")
+    .addEventListener("click", sortAndRenderByStudyYear);
+
+  document
+    .getElementById("nameFilter")
+    .addEventListener("input", filterHandler);
+  document
+    .getElementById("facultyFilter")
+    .addEventListener("input", filterHandler);
+  document
+    .getElementById("studyStartFilter")
+    .addEventListener("input", filterHandler);
+  document
+    .getElementById("studyEndFilter")
+    .addEventListener("input", filterHandler);
+
+  document
+    .getElementById("addStudentButton")
+    .addEventListener("click", addStudentHandler);
+
+  window.students = studentsList;
+})();
