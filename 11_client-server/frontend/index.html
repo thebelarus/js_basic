@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Список студентов</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script defer src="./main.js"></script>
+  </head>
+
+  <body>
+    <div
+      class="alert alert-danger alert-dismissible"
+      id="errorConnectAlert"
+      role="alert"
+      style="display: none"
+    >
+      <button
+        type="button"
+        class="close"
+        data-dismiss="alert"
+        aria-label="Close"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div id="app" class="container">
+      <h2>Добавление студента:</h2>
+      <form id="studentForm">
+        <div class="row">
+          <div class="col">
+            <label class="control-label" for="lastname">Фамилия:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="lastname"
+              name="lastname"
+            />
+          </div>
+          <div class="col">
+            <label class="control-label" for="name">Имя:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              name="name"
+            />
+          </div>
+          <div class="col">
+            <label class="control-label" for="surname">Отчество:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="surname"
+              name="surname"
+            />
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col">
+            <label class="control-label" for="birthday">Дата рождения:</label>
+            <input
+              type="date"
+              class="form-control"
+              id="birthday"
+              name="birthday"
+            />
+          </div>
+          <div class="col">
+            <label class="control-label" for="studyStart"
+              >Год начала обучения:</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="studyStart"
+              name="studyStart"
+            />
+          </div>
+          <div class="col">
+            <label for="faculty">Факультет:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="faculty"
+              name="faculty"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <button id="addStudentButton" class="btn btn-primary">
+            Добавить студента
+          </button>
+        </div>
+      </form>
+
+      <hr class="my-12" />
+      <h2>Фильтрация:</h2>
+      <div style="display: flex; justify-content: space-between">
+        <div class="form-group">
+          <label class="control-label col-sm-12" for="nameFilter"
+            >Фильтр по Ф. И. О.</label
+          >
+          <div class="col-sm-12">
+            <input id="nameFilter" class="form-control" type="text" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-12" for="nameFilter"
+            >Фильтр по Факультету</label
+          >
+          <div class="col-sm-12">
+            <input id="facultyFilter" class="form-control" type="text" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-12" for="nameFilter"
+            >Фильтр по началу обучения</label
+          >
+          <div class="col-sm-12">
+            <input id="studyStartFilter" class="form-control" type="number" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-12" for="nameFilter"
+            >Фильтр по концу обучения</label
+          >
+          <div class="col-sm-12">
+            <input id="studyEndFilter" class="form-control" type="number" />
+          </div>
+        </div>
+      </div>
+      <hr class="my-12" />
+      <h2>Таблица студентов:</h2>
+      <table id="students" class="table table-striped table-bordered w-100">
+        <thead>
+          <tr>
+            <th id="firstlastnameLabel">Ф. И. О.</th>
+            <th id="facultyLabel">Факультет</th>
+            <th id="birthdayLabel">Дата рождения и возраст</th>
+            <th id="studyYearLabel">Годы обучения и номер курса</th>
+            <th>Удаление</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </body>
+</html>
